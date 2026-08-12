@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>QR Code — Estética Facial</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #15131E;
+    color: #F5EFE3;
+    width: 210mm; height: 297mm;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px;
+    position: relative;
+  }
+  .frame {
+    position: absolute; top: 24px; left: 24px; right: 24px; bottom: 24px;
+    border: 1px solid rgba(245,239,227,0.15);
+    pointer-events: none;
+  }
+  .frame::before, .frame::after,
+  .corner-tl, .corner-tr, .corner-bl, .corner-br {
+    content: ""; position: absolute; width: 24px; height: 24px;
+    border: 1.5px solid #E8C547;
+  }
+  .corner-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .corner-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+  .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+  .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+  .meta-top {
+    position: absolute; top: 48px; left: 48px; right: 48px;
+    display: flex; justify-content: space-between;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(245,239,227,0.5);
+  }
+  .meta-bot {
+    position: absolute; bottom: 48px; left: 48px; right: 48px;
+    display: flex; justify-content: space-between;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(245,239,227,0.5);
+  }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: #D88A92;
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: ""; width: 36px; height: 1px; background: #D88A92;
+  }
+  h1 {
+    font-family: "Fraunces", "Times New Roman", serif;
+    font-size: 64px; font-weight: 300; line-height: 0.95;
+    letter-spacing: -0.035em; text-align: center; max-width: 600px;
+    margin-bottom: 12px;
+  }
+  h1 em { font-style: italic; color: #D88A92; }
+  .subtitle {
+    font-family: "Fraunces", serif;
+    font-size: 18px; font-weight: 300; font-style: italic;
+    color: rgba(245,239,227,0.7); text-align: center;
+    margin-bottom: 56px;
+  }
+  .qr-wrap {
+    background: #F5EFE3;
+    padding: 28px;
+    position: relative;
+  }
+  .qr-wrap::before, .qr-wrap::after,
+  .qr-marker-bl {
+    content: ""; position: absolute; width: 56px; height: 56px;
+    border: 8px solid #15131E;
+  }
+  .qr-wrap::before { top: 14px; left: 14px; }
+  .qr-wrap::after  { top: 14px; right: 14px; }
+  .qr-marker-bl    { bottom: 14px; left: 14px; }
+  .qr-grid {
+    display: grid;
+    grid-template-columns: repeat(29, 8px);
+    grid-template-rows: repeat(29, 8px);
+    gap: 1px;
+  }
+  .qr-grid div { background: #15131E; }
+  .qr-grid div.off { background: transparent; }
+  .url {
+    margin-top: 36px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px; letter-spacing: 0.16em;
+    color: #E8C547;
+  }
+  .url small {
+    display: block; font-size: 9px; letter-spacing: 0.32em;
+    color: rgba(245,239,227,0.4); text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .cta {
+    margin-top: 18px;
+    font-family: "Fraunces", serif;
+    font-style: italic; font-size: 22px; font-weight: 300;
+    color: #F5EFE3;
+  }
+  .scan {
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: rgba(245,239,227,0.5);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .scan::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: #D88A92;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="corner-tl"></div>
+    <div class="corner-tr"></div>
+    <div class="corner-bl"></div>
+    <div class="corner-br"></div>
+  </div>
+
+  <div class="meta-top">
+    <span>Estética Facial · 2025</span>
+    <span>Feira de Ciências</span>
+  </div>
+
+  <div class="eyebrow">Aponte a câmera · explore</div>
+  <h1>Explore <em>este rosto.</em></h1>
+  <div class="subtitle">Uma experiência interativa sobre a pele.</div>
+
+  <div class="qr-wrap">
+    <div class="qr-marker-bl"></div>
+    <div class="qr-grid" id="qrGrid"></div>
+  </div>
+
+  <div class="url">
+    https://seusite.com/#skin
+    <small>endereço da experiência</small>
+  </div>
+  <div class="cta">Toque. Investigue. Descubra.</div>
+  <div class="scan">Scan ativo</div>
+
+  <div class="meta-bot">
+    <span>QR · 01 / 01</span>
+    <span>Versão mobile</span>
+    <span>2025</span>
+  </div>
+
+<script>
+  // Grid simulado (29x29) — DECORATIVO.
+  // Para QR real e escaneável, gere em qr-code-generator.com
+  // e substitua este grid pelo QR verdadeiro.
+  const g = document.getElementById('qrGrid');
+  const pattern = [
+    "1111111.1.1.111.11.1.1..1.1.11.1.1.1.1.1.11.1.1..1.1.1111111",
+    "1.....1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.....1",
+    "1.111.1...1.1.1.111.11.1.1.1.11.1.1.1.1.11.1.1.111.1...1.1.111.1",
+    "1.111.1.111.1.1.1.1.1.1.11.1.1.1.1.1.1.11.1.1.1.1.1.1.1.111.1.111.1",
+    "1.111.1...1.1.1.111.11.1.1.1.11.1.1.1.1.11.1.1.111.1...1.1.111.1",
+    "1.....1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.....1",
+    "1111111.1.1.111.11.1.1..1.1.11.1.1.1.1.1.11.1.1..1.1.1111111",
+    "..........1.1..1...1.1..1.1.1.1.1..1.1...1.1.1..1.1..1...1.1..1",
+    "1.1.1...1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1...1.1.1.1...1.1.1.1.1",
+    "..1.1.1.1.1.1..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..1",
+    "1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "1.1..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..1",
+    "1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "1.1..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..1",
+    "1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "1.1..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..1",
+    "1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "1.1..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..1",
+    "1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "1.1..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..1",
+    "1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "1.1..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+    "..1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..1",
+    "1.1.1.1.1...1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1"
+  ];
+  for (let r = 0; r < 29; r++) {
+    for (let c = 0; c < 29; c++) {
+      const d = document.createElement('div');
+      d.className = pattern[r][c] === '1' ? '' : 'off';
+      g.appendChild(d);
+    }
+  }
+</script>
+</body>
+</html>
